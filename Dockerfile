@@ -1,8 +1,8 @@
 # DOCKER-VERSION 0.6.1
-# VERSION        0.3
+# VERSION        0.4
 
 FROM ubuntu
-MAINTAINER Justin Plock <jplock@gmail.com>
+MAINTAINER Sebastian Götte <github@jaseg.net>
 
 RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
 RUN apt-get update
@@ -14,10 +14,12 @@ RUN apt-get -y -q install curl
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN ln -s /bin/true /sbin/initctl
 
-RUN curl http://apt.basho.com/gpg/basho.apt.key | apt-key add -
+ADD basho.apt.key /tmp/basho.apt.key
+RUN apt-key add /tmp/basho.apt.key
+RUN rm /tmp/basho.apt.key
 RUN echo "deb http://apt.basho.com precise main" > /etc/apt/sources.list.d/basho.list
 RUN apt-get update
-RUN apt-get -y -q install riak || true
+RUN apt-get -y -q install riak
 RUN sed 's/127.0.0.1/0.0.0.0/' -i /etc/riak/app.config
 
 EXPOSE 8098 8087
